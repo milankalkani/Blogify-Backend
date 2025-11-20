@@ -29,6 +29,12 @@ app.use(
     credentials: true,
   })
 );
+app.use(
+  cors({
+    origin: "https://blogify-backend-156q.onrender.com/api",
+    credentials: true,
+  })
+);
 
 mongoose
   .connect(process.env.MONGO_URI)
