@@ -25,13 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://blogify-mauve-xi.vercel.app",
-    credentials: true,
-  })
-);
-app.use(
-  cors({
-    origin: "https://blogify-backend-156q.onrender.com/api",
+    origin: ["https://blogify-mauve-xi.vercel.app","http://localhost:3000"],
     credentials: true,
   })
 );
