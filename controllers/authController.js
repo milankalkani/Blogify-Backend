@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const sendEmail = require("../utils/mailer");
+const { log } = require("console");
 
 // --- Generate JWT Token ---
 const generateToken = (user) => {
@@ -16,6 +17,7 @@ const generateToken = (user) => {
 // --- Signup Controller ---
 exports.signupUser = async (req, res) => {
   try {
+    console.log(req.body);
     const { name, email, password } = req.body;
 
     // Validate input
@@ -77,8 +79,6 @@ exports.signupUser = async (req, res) => {
 // --- Login Controller ---
 exports.loginUser = async (req, res) => {
   try {
-    console.log(req.body);
-
     const { email, password } = req.body;
 
     // Validate input
