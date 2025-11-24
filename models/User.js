@@ -22,10 +22,19 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+
+    // FIXED AVATAR FIELD
     avatar: {
-      type: String,
-      default: "",
+      url: {
+        type: String,
+        default: "",
+      },
+      public_id: {
+        type: String,
+        default: "",
+      },
     },
+
     verified: {
       type: Boolean,
       default: false,
