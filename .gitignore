@@ -13,3 +13,4 @@ pnpm-debug.log
 # Build
 dist/
 build/
+".env" 
