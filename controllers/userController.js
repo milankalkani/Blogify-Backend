@@ -23,38 +23,59 @@ exports.getUserProfile = async (req, res) => {
 exports.updateUserProfile = async (req, res) => {
   try {
     const { name, password } = req.body;
+
     let user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    if (!user) return res.status(404).json({ message: "User not found" });
-
+    // Update name
     if (name) user.name = name;
 
-    // Handle password change
+    // Update password if provided
     if (password) {
       const bcrypt = require("bcrypt");
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
     }
 
-    // Handle avatar upload
+    // ============================
+    // Avatar Upload
+    // ============================
     if (req.file) {
+      // Delete old avatar if exists
       if (user.avatar?.public_id) {
-        await cloudinary.uploader.destroy(user.avatar.public_id);
+        try {
+          await cloudinary.uploader.destroy(user.avatar.public_id);
+        } catch (err) {
+          console.log("Failed to delete old avatar:", err);
+        }
       }
-      const result = await cloudinary.uploader.upload(req.file.path, {
+
+      // Upload new avatar
+      const uploaded = await cloudinary.uploader.upload(req.file.path, {
         folder: "blogify_avatars",
+        transformation: [{ width: 400, height: 400, crop: "fill" }],
       });
-      user.avatar = { url: result.secure_url, public_id: result.public_id };
+
+      user.avatar = {
+        url: uploaded.secure_url,
+        public_id: uploaded.public_id,
+      };
     }
 
     const updatedUser = await user.save();
-    res
-      .status(200)
-      .json({ message: "Profile updated successfully", user: updatedUser });
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to update profile", error: error.message });
+    console.error("Update Profile Error:", error);
+    return res.status(500).json({
+      message: "Failed to update profile",
+      error: error.message,
+    });
   }
 };
 
