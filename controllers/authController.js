@@ -39,36 +39,36 @@ exports.signupUser = async (req, res) => {
       name,
       email,
       password,
-      verified: false,
+      verified: true,
       verificationToken,
     });
 
     await user.save();
 
     // Construct verification URL
-    const verifyUrl = `${process.env.BACKEND_URL}/api/verify/${verificationToken}`;
+    // const verifyUrl = `${process.env.BACKEND_URL}/api/verify/${verificationToken}`;
 
     // Send verification email
-    const subject = "Verify your Blogify account ✉️";
-    const html = `
-      <div style="font-family:Arial;padding:20px;">
-        <h2>Hello, ${name} 👋</h2>
-        <p>Thanks for signing up for <b>Blogify</b>!</p>
-        <p>Please verify your email by clicking the link below:</p>
-        <a href="${verifyUrl}" 
-           style="background:#22c55e;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
-           Verify Email
-        </a>
-        <p>This link will expire in 24 hours.</p>
-      </div>
-    `;
+    // const subject = "Verify your Blogify account ✉️";
+    // const html = `
+    //   <div style="font-family:Arial;padding:20px;">
+    //     <h2>Hello, ${name} 👋</h2>
+    //     <p>Thanks for signing up for <b>Blogify</b>!</p>
+    //     <p>Please verify your email by clicking the link below:</p>
+    //     <a href="${verifyUrl}" 
+    //        style="background:#22c55e;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
+    //        Verify Email
+    //     </a>
+    //     <p>This link will expire in 24 hours.</p>
+    //   </div>
+    // `;
 
-    await sendEmail(email, subject, html);
+    // await sendEmail(email, subject, html);
 
     res.status(201).json({
       status: "success",
       message:
-        "Signup successful! Please check your email to verify your account.",
+        "Signup successful!",
     });
   } catch (err) {
     console.error("Signup Error:", err);
@@ -105,8 +105,6 @@ exports.loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-
-    // Generate JWT token
     const token = generateToken(user);
 
     res.status(200).json({
